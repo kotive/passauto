@@ -49,6 +49,6 @@ function isPasswordStrong(pass) {
 
 function capitaliseFirstLetter(pass){
 
-    return pass[0].toUpperCase() + pass.slice(1);
+	return pass[0].toUpperCase() + pass.slice(1);
 
 }
