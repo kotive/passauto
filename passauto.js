@@ -122,6 +122,8 @@ function selectWords(data) {
 	var rand = [];
 	var password = "";
 
+	var count = 0;
+
 	while (!isPasswordStrong(password)) {
 
 		rand = words[Math.floor(Math.random() * words.length)];
@@ -132,6 +134,15 @@ function selectWords(data) {
 			usedWords.push(rand);
 
 		}
+
+		if(count == words.length){
+
+			$("#suggested_password").html('Still loading...');
+			generate();
+
+		}
+
+		count++;
 
 	}
 
