@@ -59,10 +59,10 @@ function checkPasswordStrength(pass) {
  * @param pass Password for evaluation
  * @return boolean A boolean representing whether or not the password is strong
  */
-function isPasswordStrong(pass) {
-
+function pass_isPasswordStrong(pass) {
+    
 	var score = scorePassword(pass);
-
+    
 	if (score > 80) return true;
 	return false;
 
@@ -75,8 +75,8 @@ function isPasswordStrong(pass) {
  * @param pass The array that needs capitalisation
  * @return array The array, with only the first letter capitalised
  */
-function capitaliseFirstLetter(pass){
-
+function pass_capitaliseFirstLetter(pass){
+    
 	return pass[0].toUpperCase() + pass.slice(1).toLowerCase();
 
 }
@@ -88,22 +88,13 @@ function capitaliseFirstLetter(pass){
  * @param data The array of letters to be filtered
  * @return out An array of the filtered characters
  */
-function keepLetters(data){
-
+function pass_keepLetters(data){
+    
 	var out = [];
-
-	for (var i = 0; i < data.length; i++) {
-
-		if(data[i] != ""){
-
-			out[i] = data[i].replace(/[^a-zA-Z0-9]+/g, "");
-
-		}
-	
-	}
-
-	return out;
-
+    
+    	for (var i = 0; i < data.length; i++) if(data[i] != "") out[i] = data[i].replace(/[^a-zA-Z0-9]+/g, "");    
+    	return out;
+    	
 }
 
 /**
@@ -112,42 +103,35 @@ function keepLetters(data){
  * @author the_DJDJ
  * @param data The array of letters from which a password can be selected
  */
-function selectWords(data) {
-				
-	var words = keepLetters(data);
-	var usedWords = [];
-	var password = "";
-	var minimumLength = 4; //can be changed
+function pass_selectWords(data) {
+    	
+    	var words = pass_keepLetters(data);
+    	var usedWords = [];
+    	var password = "";
+    	var minimumLength = 4; //can be changed
+    	
+    	var rand = [];
+    	var password = "";
+    	var count = 0;
 
-	var rand = [];
-	var password = "";
-
-	var count = 0;
-
-	while (!isPasswordStrong(password)) {
-
-		rand = words[Math.floor(Math.random() * words.length)];
-
-		if(usedWords.indexOf(rand) == -1 && rand.length >= minimumLength){
-
-			password += capitaliseFirstLetter(rand);
-			usedWords.push(rand);
-
-		}
-
-		if(count == words.length){
-
-			$("#suggested_password").html('Still loading...');
-			generate();
-
-		}
-
-		count++;
-
+    	while (!pass_isPasswordStrong(password)) {
+        	
+        	rand = words[Math.floor(Math.random() * words.length)];
+        	
+        	if(usedWords.indexOf(rand) == -1 && rand.length >= minimumLength){
+        		
+        		password += pass_capitaliseFirstLetter(rand);
+        		usedWords.push(rand);
+        		
+        	}
+        	
+        	if(count == words.length) pass_generate();
+        	count++;
+    	
 	}
+    
+	$("#suggested_password").html("<small><strong>Random password generated for you: </strong><br/>"+password+"</small>");
 
-	$("#suggested_password").html(password);
-		
 }
 
 /**
@@ -155,10 +139,10 @@ function selectWords(data) {
  *
  * @author the_DJDJ
  */
-function start(){
+function pass_start(){
 
-	$("#suggested_password").html('Loading...');
-	generate();
+	$("#suggested_password").html('<small><strong>Random password generated for you: </strong><br/><img src="assets/images/loading.gif"/>&nbsp;&nbsp;Loading...</small>');
+	pass_generate();
 
 }
 
@@ -167,25 +151,26 @@ function start(){
  *
  * @author the_DJDJ
  */
-function generate(){
+function pass_generate(){
 
-	var sections = ["arts",
+	var sections = [//"arts",
 			"business",
 			"dining",
-			"fashion",
+			//"fashion",
 			"garden",
-			"health",
-			"magazine",
-			"national",
-			"nyregion",
-			"opinion",
+			//"health",
+			//"magazine",
+			//"national",
+			//"nyregion",
+			//"opinion",
 			"politics",
 			"realestate",
 			"science",
 			"sports",
 			"technology",
 			"travel",					
-			"world"];
+			//"world"
+			];
 
 	var types =    ["mostemailed",
 			"mostshared",
@@ -194,22 +179,26 @@ function generate(){
 	var time =     ["1",
 			"7",
 			"30"];
+			
+	var prefix = 'https:';
+    	if (window.parent.document.location.protocol != 'https:') prefix = 'http:';
 
 	var key = "c20545b4dc42cab4d83a7ace81ec9ac2:0:69814665";
-	var address = "http://api.nytimes.com/svc/mostpopular/v2/" +
+	var address = prefix + "//api.nytimes.com/svc/mostpopular/v2/" +
 		types[Math.floor(Math.random() * types.length)] + "/" +		//randomly select one of the different types
 		sections[Math.floor(Math.random() * sections.length)] + "/" +	//randomly select one of the different sections
 		time[Math.floor(Math.random() * time.length)] + 		//randomly select the time period (day, week, month)
-		".jsonp?api-key=" + key + "&callback=getWords";			//wrap using JSONP and getWords() method
+		".jsonp?api-key=" + key + "&callback=pass_getWords";			//wrap using JSONP and getWords() method
 		
 	$.ajax({
+		
 		url:		address,
 		cache:		false,
 		crossOrigin:	true,
 		dataType:	'jsonp',
 		success:	function(data){
 
-			getWords(data, address);
+			pass_getWords(data, address);
 
 		}
 
@@ -224,19 +213,11 @@ function generate(){
  * @param data The JSON data that needs to be converted
  * @param address The URL at which the data was found, in case that the data is blank
  */
-function getWords(data, address){
+function pass_getWords(data, address){
 
 	var results = data.results;
 
-	if(results.length == 0){
-
-		$("#suggested_password").html('Still loading...');
-		generate();
-
-	} else {
-
-		selectWords(results[Math.floor(Math.random() * data.results.length)].abstract.split(' '));
-
-	}
+	if(results.length == 0) pass_generate();
+    	else pass_selectWords(results[Math.floor(Math.random() * data.results.length)].abstract.split(' '));
 
 }
