@@ -130,7 +130,7 @@ function pass_selectWords(data) {
     	
 	}
     
-	$("#suggested_password").html("<small><strong>Random password generated for you: </strong><br/>"+password+"<div style=\"float:right\"><a href=\"\" onclick=\"pass_start(); return false;\">Test</a></div></small>");
+	$("#suggested_password").html("<small><strong>Random password generated for you: </strong><br/>"+password+"<div style=\"float:right\"><a href=\"\" onclick=\"pass_start(); return false;\">reload</a></div></small>");
 
 }
 
@@ -195,7 +195,7 @@ function pass_generate(){
 		types[Math.floor(Math.random() * types.length)] + "/" +		//randomly select one of the different types
 		sections[Math.floor(Math.random() * sections.length)] + "/" +	//randomly select one of the different sections
 		time[Math.floor(Math.random() * time.length)] + 		//randomly select the time period (day, week, month)
-		".jsonp?api-key=" + key + "&callback=pass_getWords";		//wrap using JSONP and getWords() method
+		".jsonp?api-key=" + key + "&callback=pass_getWords";		//wrap using JSONP and pass_getWords() method
 		
 	$.ajax({
 		
@@ -205,7 +205,7 @@ function pass_generate(){
 		dataType:	'jsonp',
 		success:	function(data){
 
-			pass_getWords(data, address);
+			pass_getWords(data);
 
 		}
 
@@ -220,7 +220,7 @@ function pass_generate(){
  * @param data The JSON data that needs to be converted
  * @param address The URL at which the data was found, in case that the data is blank
  */
-function pass_getWords(data, address){
+function pass_getWords(data){
 
 	var results = data.results;
 
