@@ -174,7 +174,7 @@ function pass_generate(){
 			"science",
 			"sports",
 			"technology",
-			"theater",
+			//"theater",
 			"travel",					
 			//"world"
 			];
