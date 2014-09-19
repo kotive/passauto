@@ -130,7 +130,7 @@ function pass_selectWords(data) {
     	
 	}
     
-	$("#suggested_password").html("<small><strong>Random password generated for you: </strong><br/>"+password+"</small>");
+	$("#suggested_password").html("<small><strong>Random password generated for you: </strong><br/>"+password+"<div style=\"float:right\"><a href=\"\" onclick=\"pass_start(); return false;\">Test</a></div></small>");
 
 }
 
@@ -142,6 +142,7 @@ function pass_selectWords(data) {
 function pass_start(){
 
 	$("#suggested_password").html('<small><strong>Random password generated for you: </strong><br/><img src="assets/images/loading.gif"/>&nbsp;&nbsp;Loading...</small>');
+
 	pass_generate();
 
 }
@@ -154,20 +155,26 @@ function pass_start(){
 function pass_generate(){
 
 	var sections = [//"arts",
+			"automobiles",
+			//"books",
 			"business",
 			"dining",
+			"education",
 			//"fashion",
 			"garden",
 			//"health",
 			//"magazine",
+			//"movies",
 			//"national",
 			//"nyregion",
+			"obituaries",
 			//"opinion",
 			"politics",
 			"realestate",
 			"science",
 			"sports",
 			"technology",
+			"theater",
 			"travel",					
 			//"world"
 			];
@@ -188,7 +195,7 @@ function pass_generate(){
 		types[Math.floor(Math.random() * types.length)] + "/" +		//randomly select one of the different types
 		sections[Math.floor(Math.random() * sections.length)] + "/" +	//randomly select one of the different sections
 		time[Math.floor(Math.random() * time.length)] + 		//randomly select the time period (day, week, month)
-		".jsonp?api-key=" + key + "&callback=pass_getWords";			//wrap using JSONP and getWords() method
+		".jsonp?api-key=" + key + "&callback=pass_getWords";		//wrap using JSONP and getWords() method
 		
 	$.ajax({
 		
