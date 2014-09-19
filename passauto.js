@@ -1,3 +1,10 @@
+/**
+ * Returns a score for the password
+ * 
+ * @author Hendrik Rust
+ * @param pass Password for evaluation
+ * @return score The score of the password
+ */
 function scorePassword(pass) {
 
   	var score = 0;
@@ -28,6 +35,13 @@ function scorePassword(pass) {
 
 }
 
+/**
+ * Checks a password's strength based on what score it achieved
+ *
+ * @author Hendrik Rust
+ * @param pass Password for evaluation
+ * @return html The strength of the password, formatted in HTML
+ */
 function checkPasswordStrength(pass) {
 
   	var score = scorePassword(pass);
@@ -38,6 +52,13 @@ function checkPasswordStrength(pass) {
 
 }
 
+/**
+ * Checks if a password is strong, and then returns a corresponding boolean
+ *
+ * @author the_DJDJ
+ * @param pass Password for evaluation
+ * @return boolean A boolean representing whether or not the password is strong
+ */
 function isPasswordStrong(pass) {
 
 	var score = scorePassword(pass);
@@ -47,8 +68,175 @@ function isPasswordStrong(pass) {
 
 }
 
+/**
+ * Capitalises the first letter in an array
+ *
+ * @author the_DJDJ
+ * @param pass The array that needs capitalisation
+ * @return array The array, with only the first letter capitalised
+ */
 function capitaliseFirstLetter(pass){
 
-	return pass[0].toUpperCase() + pass.slice(1);
+	return pass[0].toUpperCase() + pass.slice(1).toLowerCase();
+
+}
+
+/**
+ * Filters out all special and non-alphanumeric characters so that only letters and numbers remain
+ *
+ * @author the_DJDJ
+ * @param data The array of letters to be filtered
+ * @return out An array of the filtered characters
+ */
+function keepLetters(data){
+
+	var out = [];
+
+	for (var i = 0; i < data.length; i++) {
+
+		if(data[i] != ""){
+
+			out[i] = data[i].replace(/[^a-zA-Z0-9]+/g, "");
+
+		}
+	
+	}
+
+	return out;
+
+}
+
+/**
+ * Chooses a strong password based on an array. Also checks for whether or not there are enough words to form a strong password
+ *
+ * @author the_DJDJ
+ * @param data The array of letters from which a password can be selected
+ */
+function selectWords(data) {
+				
+	var words = keepLetters(data);
+	var usedWords = [];
+	var password = "";
+	var minimumLength = 4; //can be changed
+
+	var rand = [];
+	var password = "";
+
+	var count = 0;
+
+	while (!isPasswordStrong(password)) {
+
+		rand = words[Math.floor(Math.random() * words.length)];
+
+		if(usedWords.indexOf(rand) == -1 && rand.length >= minimumLength){
+
+			password += capitaliseFirstLetter(rand);
+			usedWords.push(rand);
+
+		}
+
+		if(count == words.length){
+
+			$("#suggested_password").html('Still loading...');
+			generate();
+
+		}
+
+		count++;
+
+	}
+
+	$("#suggested_password").html(password);
+		
+}
+
+/**
+ * Starts the password generation process. Is only it's own method to allow for <code>id='suggested_password'</code> to have two non-password values
+ *
+ * @author the_DJDJ
+ */
+function start(){
+
+	$("#suggested_password").html('Loading...');
+	generate();
+
+}
+
+/**
+ * Generates a random URL at which to find the resources that are required to generate a password
+ *
+ * @author the_DJDJ
+ */
+function generate(){
+
+	var sections = ["arts",
+			"business",
+			"dining",
+			"fashion",
+			"garden",
+			"health",
+			"magazine",
+			"national",
+			"nyregion",
+			"opinion",
+			"politics",
+			"realestate",
+			"science",
+			"sports",
+			"technology",
+			"travel",					
+			"world"];
+
+	var types =    ["mostemailed",
+			"mostshared",
+			"mostviewed"];
+
+	var time =     ["1",
+			"7",
+			"30"];
+
+	var key = "c20545b4dc42cab4d83a7ace81ec9ac2:0:69814665";
+	var address = "http://api.nytimes.com/svc/mostpopular/v2/" +
+		types[Math.floor(Math.random() * types.length)] + "/" +		//randomly select one of the different types
+		sections[Math.floor(Math.random() * sections.length)] + "/" +	//randomly select one of the different sections
+		time[Math.floor(Math.random() * time.length)] + 		//randomly select the time period (day, week, month)
+		".jsonp?api-key=" + key + "&callback=getWords";			//wrap using JSONP and getWords() method
+		
+	$.ajax({
+		url:		address,
+		cache:		false,
+		crossOrigin:	true,
+		dataType:	'jsonp',
+		success:	function(data){
+
+			getWords(data, address);
+
+		}
+
+	});
+
+}
+
+/**
+ * Converts JSON data into an array of words that can be used to generate the password. Also checks for blank documents
+ *
+ * @author the_DJDJ
+ * @param data The JSON data that needs to be converted
+ * @param address The URL at which the data was found, in case that the data is blank
+ */
+function getWords(data, address){
+
+	var results = data.results;
+
+	if(results.length == 0){
+
+		$("#suggested_password").html('Still loading...');
+		generate();
+
+	} else {
+
+		selectWords(results[Math.floor(Math.random() * data.results.length)].abstract.split(' '));
+
+	}
 
 }

@@ -6,36 +6,20 @@
 		<title>passauto</title>
 		<link rel="stylesheet" type="text/css" href="kotive-flow.css">
 		<script src="passauto.js"></script>
-		<script src="jquery-1.11.1.min.js"></script>		
+		<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
+		<script src="jquery-1.11.1.min.js"></script>
 	
 	</head>
 
 	<body>
+
+		<div id="suggested_password"></div>
+
 	</body>
 	  	
 	<script>
 
-		$(document).ready(function() {
-
-			$.get('words', function(data) { //file from /usr/share/dict/
-				
-				var words = data.split('\n');
-				var password = "";
-
-				while (!isPasswordStrong(password)) {
-				
-					var random = capitaliseFirstLetter(words[Math.floor(Math.random()*words.length)]);
-					var password = password + random;
-
-				}
-
-				console.log("(html)    Output:   " + checkPasswordStrength(password));
-				console.log("(boolean) Strong?:  " + isPasswordStrong(password));
-				console.log("(string)  Password: " + password);
-		
-			}, 'text');
-
-		});
+		$(document).ready(generate());
 
 		
 	</script>	
