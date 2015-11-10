@@ -130,7 +130,7 @@ function pass_selectWords(data) {
     	
 	}
     
-	$("#suggested_password").html("<small><strong>Random password generated for you: </strong><br/>"+password+"<div style=\"float:right\"><a href=\"\" onclick=\"pass_start(); return false;\">reload</a></div></small>");
+	$("#suggested_password").html("<small><strong>Random password generated for you: </strong><br/>"+password+"<div style=\"float:right\"><a href=\"\" onclick=\"pass_start(); return false;\">reload</a> | <a href=\"\" onclick=\"javascript:pass_alert('"+password+"'); return false;\">copy</a></div></small>");
 
 }
 
@@ -227,4 +227,16 @@ function pass_getWords(data){
 	if(results.length == 0) pass_generate();
     	else pass_selectWords(results[Math.floor(Math.random() * data.results.length)].abstract.split(' '));
 
+}
+
+/**
+ * Allows a user to quickly copy their password by displaying it in a prompt so that they only have to press CTRL + C
+ *
+ * @author the_DJDJ
+ * @param password The text to display in the prompt box
+ */
+function pass_alert(password){
+	
+	prompt("Press CTRL + C to copy your password to your clipboard", password);
+	
 }
